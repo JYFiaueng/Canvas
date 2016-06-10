@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>五子棋</title>
+
+<style>
+	canvas{
+		display: block;
+		margin: 50px auto;
+		box-shadow: -2px -2px 2px #aaa, 5px 5px 5px #333;
+	}
+	#change{
+		position: absolute;
+		top: 50px;
+		left: 50px;
+		width: 100px;
+		text-align: center;
+	}
+	#change input{
+		margin: 10px 0;
+	}
+</style>
+
+</head>
+<body>
+	<canvas id="chess"></canvas>
+	<div id="change">
+		<input type="button" value="重新开始" id="resets">
+		<input type="button" value="15X15" id="B15">
+		<input type="button" value="18X18" id="B18">
+		<input type="button" value="21X21" id="B21">
+	</div>
+	<script src="main.js"></script>
+</body>
+</html>

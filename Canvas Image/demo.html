@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>红包照片</title>
+	<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+	<style>
+		#blur-div{
+			display: block;
+			width: 600px;
+			height: 600px;
+			margin: 0 auto;
+			position: relative;
+		}
+		#blur-image{
+			width: 600px;
+			height: 600px;
+			display: block;
+			position: absolute;
+			left: 0;
+			top: 0;
+			z-index: 0;
+			filter: blur(5px);
+			-webkit-filter: blur(5px);
+		}
+		#canvas{
+			display: block;
+			position: absolute;
+			left: 0;
+			top: 0;
+			z-index: 1;
+		}
+		#db{
+			text-align: center;
+			margin-top: 20px;
+		}
+		#db input{
+			border: none;
+			border-radius: 20px;
+			width: 100px;
+			height: 40px;
+			background-color: #39f;
+			margin: 0 150px;
+			cursor: pointer;
+			font-size: 20px;
+			font-weight: bold;
+			color: #fff;
+		}
+	</style>
+</head>
+<body>
+	<div id="blur-div">
+		<img id="blur-image"src="pic.jpg" alt="#">
+		<canvas id="canvas"></canvas>
+	</div>
+	<div id="db">
+		<input type="button" id="reset" value="reset">
+		<input type="button" id="show" value="show">
+	</div>
+	<script src="main.js"></script>
+</body>
+</html>
