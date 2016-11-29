@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>图像处理</title>
+<style>
+	canvas{
+		border: 1px solid #000;
+		margin: 0 48px;
+	}
+	div a{
+		margin: 0 20px;
+		color: #333;
+		text-decoration: none;
+	}
+</style>
+</head>
+<body>
+	<div style="margin: 20px auto; width: 1400px;">
+		<canvas id="canvasa" width="600" height="500"></canvas>
+		<canvas id="canvasb" width="600" height="500"></canvas>
+	</div>
+	<div style="text-align: center;font-size: 30px;">
+		<a href="javascript: grayEffect();">灰度滤镜</a>
+		<a href="javascript: black();">黑白滤镜</a>
+		<a href="javascript: reverse();">反色滤镜</a>
+		<a href="javascript: blur();">模糊滤镜</a>
+		<a href="javascript: mosaic();">马赛克滤镜</a>
+	</div>
+<script>
+	var canvasa = document.getElementById('canvasa'),
+		canvasb = document.getElementById('canvasb'),
+		ctxa = canvasa.getContext('2d'),
+		ctxb = canvasb.getContext('2d'),
+		image = new Image();
+	image.src = '3.jpg';
+	image.onload = function(){
+		ctxa.drawImage(image, 0, 0, canvasa.width, canvasa.height);
+	};
+
+	function grayEffect(){
+		var imageData = ctxa.getImageData(0, 0, canvasa.width, canvasa.height),
+			pixalData = imageData.data,r,g,b,gray;
+		for(var i = 0, len = pixalData.length; i < len; i++){
+			r = pixalData[4*i+0];
+			g = pixalData[4*i+1];
+			b = pixalData[4*i+2];
+			gray = r*0.3+g*0.59+b*0.11;
+			pixalData[4*i+0] = gray;
+			pixalData[4*i+1] = gray;
+			pixalData[4*i+2] = gray;
+		}
+		ctxb.putImageData(imageData, 0, 0);
+	}
+	function blur(){
+		var imageData = ctxa.getImageData(0, 0, canvasa.width, canvasa.height),
+			pixalData = imageData.data,
+			tmpimageData = ctxa.getImageData(0, 0, canvasa.width, canvasa.height),
+			tmppixalData = imageData.data,
+			i,j,len1,len2,tr,tg,tb,dx,dy,x,y,p,q,
+			blurR = 3,tNumber = (blurR*2+1)*(blurR*2+1);
+
+			for(i = blurR, len1 = canvasb.height-blurR; i < len1; i++){
+				for(j = blurR, len2 = canvasb.width-blurR; j < len2; j++){
+					tr = 0;
+					tg = 0;
+					tb = 0;
+					for(dx = -blurR; dx <= blurR; dx++){
+						for(dy = -blurR; dy <= blurR; dy++){
+							x = i + dx;
+							y = j + dy;
+							p = x*canvasb.width+y;
+							tr += tmppixalData[p*4+0];
+							tg += tmppixalData[p*4+1];
+							tb += tmppixalData[p*4+2];
+						}
+					}
+					q = i*canvasb.width + j;
+					pixalData[q*4+0] = tr/tNumber;
+					pixalData[q*4+1] = tg/tNumber;
+					pixalData[q*4+2] = tb/tNumber;
+				}
+			}
+			
+		ctxb.putImageData(imageData, 0, 0);
+	}
+	function mosaic(){
+		var imageData = ctxa.getImageData(0, 0, canvasa.width, canvasa.height),
+			pixalData = imageData.data,
+			tmpimageData = ctxa.getImageData(0, 0, canvasa.width, canvasa.height),
+			tmppixalData = imageData.data,
+			i,j,len1,len2,tr,tg,tb,dx,dy,x,y,p,q,mskr,mskg,mskb,
+			size = 10,tNumber = size*size;
+
+			for(i = 0, len1 = canvasb.height; i < len1; i += size){
+				for(j = 0, len2 = canvasb.width; j < len2; j += size){
+					tr = 0;
+					tg = 0;
+					tb = 0;
+					for(dx = 0; dx < size; dx++){
+						for(dy = 0; dy < size; dy++){
+							x = i + dx;
+							y = j + dy;
+							p = x*canvasb.width+y;
+							tr += tmppixalData[p*4+0];
+							tg += tmppixalData[p*4+1];
+							tb += tmppixalData[p*4+2];
+						}
+					}
+					q = i*canvasb.width + j;
+					mskr = tr/tNumber;
+					mskg = tg/tNumber;
+					mskb = tb/tNumber;
+					for(dx = 0; dx < size; dx++){
+						for(dy = 0; dy < size; dy++){
+							x = i + dx;
+							y = j + dy;
+							p = x*canvasb.width+y;
+							pixalData[p*4+0] = mskr;
+							pixalData[p*4+1] = mskg;
+							pixalData[p*4+2] = mskb;
+						}
+					}
+				}
+			}
+			
+		ctxb.putImageData(imageData, 0, 0);
+	}
+	function reverse(){
+		var imageData = ctxa.getImageData(0, 0, canvasa.width, canvasa.height),
+			pixalData = imageData.data,r,g,b,gray;
+		for(var i = 0, len = pixalData.length; i < len; i++){
+			r = pixalData[4*i+0];
+			g = pixalData[4*i+1];
+			b = pixalData[4*i+2];
+			// gray = r*0.3+g*0.59+b*0.11;
+			pixalData[4*i+0] = 255-r;
+			pixalData[4*i+1] = 255-g;
+			pixalData[4*i+2] = 255-b;
+		}
+		ctxb.putImageData(imageData, 0, 0);
+	}
+	function black(){
+		var imageData = ctxa.getImageData(0, 0, canvasa.width, canvasa.height),
+			pixalData = imageData.data,r,g,b,gray,v;
+		for(var i = 0, len = pixalData.length; i < len; i++){
+			r = pixalData[4*i+0];
+			g = pixalData[4*i+1];
+			b = pixalData[4*i+2];
+			gray = r*0.3+g*0.59+b*0.11;
+			if(gray > 255/2){
+				v = 255;
+			}else{
+				v = 0;
+			}
+			pixalData[4*i+0] = v;
+			pixalData[4*i+1] = v;
+			pixalData[4*i+2] = v;
+		}
+		ctxb.putImageData(imageData, 0, 0);
+	}
+</script>
+</body>
+</html>
