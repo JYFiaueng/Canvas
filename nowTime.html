@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>时钟</title>
+<style>
+	html,body{
+		height: 98%;
+	}
+	#canvas{
+		margin: 0 auto;
+		display: block;
+		height: 100%;
+	}
+</style>
+</head>
+<body>
+	<canvas id="canvas">
+		浏览器不支持canvas动画
+	</canvas>
+<script>
+	var digit =
+    [
+        [
+            [0,0,1,1,1,0,0],
+            [0,1,1,0,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,0,1,1,0],
+            [0,0,1,1,1,0,0]
+        ],//0
+        [
+            [0,0,0,1,1,0,0],
+            [0,1,1,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [1,1,1,1,1,1,1]
+        ],//1
+        [
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,0,1,1,0,0,0],
+            [0,1,1,0,0,0,0],
+            [1,1,0,0,0,0,0],
+            [1,1,0,0,0,1,1],
+            [1,1,1,1,1,1,1]
+        ],//2
+        [
+            [1,1,1,1,1,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,0,1,1,1,0,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//3
+        [
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,1,0],
+            [0,0,1,1,1,1,0],
+            [0,1,1,0,1,1,0],
+            [1,1,0,0,1,1,0],
+            [1,1,1,1,1,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,1,1]
+        ],//4
+        [
+            [1,1,1,1,1,1,1],
+            [1,1,0,0,0,0,0],
+            [1,1,0,0,0,0,0],
+            [1,1,1,1,1,1,0],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//5
+        [
+            [0,0,0,0,1,1,0],
+            [0,0,1,1,0,0,0],
+            [0,1,1,0,0,0,0],
+            [1,1,0,0,0,0,0],
+            [1,1,0,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//6
+        [
+            [1,1,1,1,1,1,1],
+            [1,1,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,0,0,1,1,0,0],
+            [0,0,1,1,0,0,0],
+            [0,0,1,1,0,0,0],
+            [0,0,1,1,0,0,0],
+            [0,0,1,1,0,0,0]
+        ],//7
+        [
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,1,1,0]
+        ],//8
+        [
+            [0,1,1,1,1,1,0],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [1,1,0,0,0,1,1],
+            [0,1,1,1,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,0,1,1],
+            [0,0,0,0,1,1,0],
+            [0,0,0,1,1,0,0],
+            [0,1,1,0,0,0,0]
+        ],//9
+        [
+            [0,0,0,0],
+            [0,0,0,0],
+            [0,1,1,0],
+            [0,1,1,0],
+            [0,0,0,0],
+            [0,0,0,0],
+            [0,1,1,0],
+            [0,1,1,0],
+            [0,0,0,0],
+            [0,0,0,0]
+        ]//:
+    ],
+    WINDOW_WIDTH = 1300,
+    WINDOW_HEIGHT = 600,
+    RADIUS = 8,
+    MARGIN_TOP = 60,
+    MARGIN_LEFT = 30;
+
+    var curShowTimeSeconds = 0;
+   	var balls = [];
+   	const colors = ["#33b5e5", "#09c", "#a6c", "#93c", "#9c0", "#690", "#fb3", "#f80", "#f44", "#c00"];
+    window.onload = function(){
+    	WINDOW_WIDTH = document.body.clientWidth;
+    	WINDOW_HEIGHT = document.body.clientHeight;
+    	MARGIN_LEFT = Math.round(WINDOW_WIDTH/10);
+    	RADIUS = Math.round(WINDOW_WIDTH * 4 / 5 / 108)-1;//108是所有横向点的数量
+    	MARGIN_TOP = Math.round(WINDOW_HEIGHT/5);
+    	var canvas = document.getElementById("canvas"),
+    		ctx = canvas.getContext("2d");
+    	canvas.width = WINDOW_WIDTH;
+    	canvas.height = WINDOW_HEIGHT;
+
+    	curShowTimeSeconds = getCurrentShowTimeSeconds();
+    	requestAnimationFrame(RAF);
+    	function RAF(){
+    		render(ctx);
+    		update();
+    		requestAnimationFrame(RAF);
+    	}
+    };
+    function getCurrentShowTimeSeconds(){
+    	var curTime = new Date();
+    	ret = Math.round( (curTime.getTime() - new Date(curTime.getFullYear(), curTime.getMonth(), curTime.getDate(), 0, 0, 0).getTime())/1000 );
+    	return ret > 0 ? ret : 0;
+    }
+    function update(){
+    	var nextShowTimeSeconds = getCurrentShowTimeSeconds(),
+    		nextHours = parseInt(nextShowTimeSeconds/3600),
+    		nextMinutes = parseInt((nextShowTimeSeconds - nextHours*3600)/60),
+    		nextSeconds = nextShowTimeSeconds%60,
+    		curHours = parseInt(curShowTimeSeconds/3600),
+    		curMinutes = parseInt((curShowTimeSeconds - curHours*3600)/60),
+    		curSeconds = curShowTimeSeconds%60;
+    	if(nextSeconds != curSeconds){
+    		if(parseInt(curHours/10) != parseInt(nextHours/10)){
+    			addBalls(MARGIN_LEFT+0, MARGIN_TOP, parseInt(curHours/10));
+    		}
+    		if(parseInt(curHours%10) != parseInt(nextHours%10)){
+    			addBalls(MARGIN_LEFT+15*(RADIUS+1), MARGIN_TOP, parseInt(curHours)%10);
+    		}
+    		if(parseInt(curMinutes/10) != parseInt(nextMinutes/10)){
+    			addBalls(MARGIN_LEFT+39*(RADIUS+1), MARGIN_TOP, parseInt(curMinutes/10));
+    		}
+    		if(parseInt(curMinutes%10) != parseInt(nextMinutes%10)){
+    			addBalls(MARGIN_LEFT+54*(RADIUS+1), MARGIN_TOP, parseInt(curMinutes)%10);
+    		}
+    		if(parseInt(nextSeconds/10) != parseInt(curSeconds/10)){
+    			addBalls(MARGIN_LEFT+78*(RADIUS+1), MARGIN_TOP, parseInt(curSeconds/10));
+    		}
+    		if(parseInt(nextSeconds%10) != parseInt(curSeconds%10)){
+    			addBalls(MARGIN_LEFT+93*(RADIUS+1), MARGIN_TOP, parseInt(curSeconds)%10);
+    		}
+    		curShowTimeSeconds = nextShowTimeSeconds;
+    	}
+    	updateBalls();
+    }
+    function updateBalls(){
+    	var cnt = 0;
+    	for(var i = 0, len = balls.length; i < len; i++){
+    		balls[i].x += balls[i].vx;
+    		balls[i].y += balls[i].vy;
+    		balls[i].vy += balls[i].g;
+    		if(balls[i].y >= WINDOW_HEIGHT - RADIUS){
+    			balls[i].y = WINDOW_HEIGHT - RADIUS;
+    			balls[i].vy = -balls[i].vy*0.75;
+    		}
+
+    		if(balls[i].x + RADIUS > 0 && balls[i].x - RADIUS < WINDOW_WIDTH){
+    			balls[cnt++] = balls[i];
+    		}
+    	}
+    	while(balls.length > Math.min(cnt, 400)){
+    		balls.pop();
+    	}
+    	console.log(balls.length);
+    }
+    function addBalls(x, y, num){
+    	for(var i = 0,len1 = digit[num].length; i < len1; i++){
+    		for(var j = 0,len2 = digit[num][i].length; j < len2; j++){
+    			if(digit[num][i][j] == 1){
+    				var aBall = {
+    					x : x+(j*2+1)*(RADIUS+1),
+    					y : y+(i*2+1)*(RADIUS+1),
+    					g : 1.5 + Math.random(),
+    					vx : Math.pow(-1, Math.ceil(Math.random()*1000))*4,
+    					vy : -5,
+    					color : colors[Math.floor(Math.random() * colors.length)]
+    				};
+    				balls.push(aBall);
+    			}
+    		}
+    	}
+    }
+    function render(ctx){
+    	ctx.clearRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);//对屏幕矩形进行刷新
+    	var hours = parseInt(curShowTimeSeconds/3600),
+    		minutes = parseInt((curShowTimeSeconds - hours*3600)/60),
+    		seconds = curShowTimeSeconds%60;
+    	renderDigit(MARGIN_LEFT, MARGIN_TOP, parseInt(hours/10), ctx);
+    	renderDigit(MARGIN_LEFT+15*(RADIUS+1), MARGIN_TOP, parseInt(hours%10), ctx);
+    	renderDigit(MARGIN_LEFT+30*(RADIUS+1), MARGIN_TOP, 10, ctx);
+    	renderDigit(MARGIN_LEFT+39*(RADIUS+1), MARGIN_TOP, parseInt(minutes/10), ctx);
+    	renderDigit(MARGIN_LEFT+54*(RADIUS+1), MARGIN_TOP, parseInt(minutes%10), ctx);
+    	renderDigit(MARGIN_LEFT+69*(RADIUS+1), MARGIN_TOP, 10, ctx);
+    	renderDigit(MARGIN_LEFT+78*(RADIUS+1), MARGIN_TOP, parseInt(seconds/10), ctx);
+    	renderDigit(MARGIN_LEFT+93*(RADIUS+1), MARGIN_TOP, parseInt(seconds%10), ctx);
+    	for(var i = 0,len = balls.length; i < len; i++){
+    		ctx.fillStyle = balls[i].color;
+    		ctx.beginPath();
+    		ctx.arc(balls[i].x, balls[i].y, RADIUS, 0, 2*Math.PI, true);
+    		ctx.closePath();
+    		ctx.fill();
+    	}
+    }
+    //在指定位置绘制指定的图案
+    function renderDigit(x, y, num, ctx){
+    	ctx.fillStyle = "rgb(0, 102, 153)";
+    	for(var i = 0,len1 = digit[num].length; i < len1; i++){
+    		for(var j = 0,len2 = digit[num][i].length; j < len2; j++){
+    			if(digit[num][i][j] == 1){
+    				ctx.beginPath();
+    				ctx.arc(x+(j*2+1)*(RADIUS+1), y+(i*2+1)*(RADIUS+1), RADIUS, 0, 2*Math.PI);
+    				ctx.closePath();
+    				ctx.fill();
+    			}
+    		}
+    	}
+    }
+</script>
+</body>
+</html>
