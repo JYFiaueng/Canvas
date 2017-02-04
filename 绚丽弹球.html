@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>demo</title>
+<style>
+	#canvas{
+		border: 1px solid #aaa;
+		display: block;
+		margin: 0 auto;
+	}
+</style>
+</head>
+<body>
+	<canvas id="canvas"></canvas>
+<script>
+	var balls = [];
+	window.onload = function(){
+		var canvas = document.getElementById('canvas');
+		canvas.width = 1400;
+		canvas.height = 700;
+		var ctx = canvas.getContext("2d");
+		// ctx.globalAlpha = 0.7;
+		ctx.globalCompositeOperation = "lighter";
+		var i = 0, R, G, B, r, aBall = {};
+		for(i = 0; i < 100; i++){
+			R = Math.floor(Math.random()*255);
+			G = Math.floor(Math.random()*255);
+			B = Math.floor(Math.random()*255);
+			r = Math.random()*50+30;
+			aBall = {
+				color : "rgb("+R+","+G+","+B+")",
+				r : r,
+				x : Math.random() * (canvas.width - 2*r)+r,
+				y : Math.random() * (canvas.height - 2*r)+r,
+				vx : (Math.random()*5)*Math.pow(-1, Math.floor(Math.random()*100)),
+				vy : (Math.random()*5)*Math.pow(-1, Math.floor(Math.random()*100))
+			};
+			balls[i] = aBall;
+		}
+		requestAnimationFrame(RAF);
+		function RAF(){
+			draw(ctx);
+			update(canvas.width, canvas.height);
+			requestAnimationFrame(RAF);
+		}
+	};
+	function draw(ctx){
+		var canvas = ctx.canvas;
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		for(var i = 0, len = balls.length; i < len; i++){
+			ctx.fillStyle = balls[i].color;
+			ctx.beginPath();
+			ctx.arc(balls[i].x, balls[i].y, balls[i].r, 0, 2*Math.PI);
+			ctx.closePath();
+			ctx.fill();
+		}
+	}
+	function update(canvaswidth, canvasheight){
+		for(var i = 0, len = balls.length; i < len; i++){
+			balls[i].x += balls[i].vx;
+			balls[i].y += balls[i].vy;
+			if( balls[i].x - balls[i].r <= 0){
+				balls[i].vx = -balls[i].vx;
+				balls[i].x = balls[i].r;
+			}
+			if( balls[i].x + balls[i].r >= canvaswidth){
+				balls[i].vx = -balls[i].vx;
+				balls[i].x = canvaswidth - balls[i].r;
+			}
+			if( balls[i].y - balls[i].r <= 0){
+				balls[i].vy = -balls[i].vy;
+				balls[i].y = balls[i].r;
+			}
+			if( balls[i].y + balls[i].r >= canvasheight){
+				balls[i].vy = -balls[i].vy;
+				balls[i].y = canvasheight - balls[i].r;
+			}
+		}
+	}
+</script>
+</body>
+</html>
