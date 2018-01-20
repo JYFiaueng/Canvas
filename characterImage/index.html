@@ -27,13 +27,31 @@
 
 		#dd {
 			font-size: 7px;
-			width: 1000px;
-			height: 800px;
+			width: 600px;
+			height: 640px;
 			text-align: center;
-			line-height: 8px;
+			line-height: 7px;
 			position: absolute;
 			left: 50%;
-			margin-left: -500px;
+			margin-left: -300px;
+			overflow: hidden;
+			margin-bottom: 50px;
+			border: none;
+			border-radius: 50%;
+			background-color: antiquewhite;
+			animation: xz 24s linear infinite;
+		}
+
+		@keyframes xz {
+			0% {
+				transform: rotate(0deg);
+			}
+			50% {
+				background-color: aliceblue;
+			}
+			100% {
+				transform: rotate(360deg);
+			}
 		}
 
 		h1 {
@@ -47,17 +65,21 @@
 
 		ol li {
 			display: inline-block;
+			padding: 10px 20px;
+			border-radius: 3px;
+			margin: 0 10px;
+			background-color: antiquewhite;
 			cursor: pointer;
 		}
 
 		ol li:hover {
-			font-weight: bold;
+			background-color: bisque;
 		}
 	</style>
 </head>
 
 <body>
-	<h1>使用Canvas通过对图片进行马赛克处理生成字符图片</h1>
+	<h1 style="padding: 20px;">使用Canvas通过对图片进行马赛克处理生成字符图片</h1>
 	<ol id="imgList">
 		<li>img-1</li>
 		<li>img-2</li>
@@ -66,12 +88,14 @@
 		<li>img-5</li>
 		<li>img-6</li>
 		<li>img-7</li>
+		<li>img-8</li>
 	</ol>
+	<p style="text-align: center; padding: 20px;">
+		<input type="file" id="uploadFile">
+		<span>自己选个文件试一试</span>
+	</p>
 	<p style="text-align: center;">点击上面切换图片，字符图片在最下面</p>
-	<div style="text-align: center;font-size: 30px;">
-		<a href="javascript: mosaic();">点击这里查看效果</a>
-	</div>
-	<div style="margin: 20px auto;">
+	<div style="margin: 20px auto;text-align:center;">
 		<canvas id="canvasa" width="500" height="400">请使用支持Canvas的浏览器</canvas>
 		<canvas id="canvasb" width="500" height="400">请使用支持Canvas的浏览器</canvas>
 	</div>
@@ -79,20 +103,21 @@
 
 	</textarea>
 	<script>
-		// var s = ['@', 'Q', 'G', 'a', 'o', 'c', ';', ':', '-', '-', ',', '.', '&nbsp;'];
 		var s = ['@', 'Q', 'G', 'a', 'o', 'c', ';', ':', '-', '-', ',', '.', ' '];
 		var str = [];
-		var s1 = 0,
-			s2 = 0;
+		var s1 = 0;
+		var s2 = 0;
 		var imgList = document.getElementById('imgList');
 		var canvasa = document.getElementById('canvasa'),
 			canvasb = document.getElementById('canvasb'),
 			ctxa = canvasa.getContext('2d'),
 			ctxb = canvasb.getContext('2d'),
 			image = new Image();
+		var uploadFile = document.getElementById('uploadFile');
 		image.src = 'images/6.jpg';
 		image.onload = function () {
 			ctxa.drawImage(image, 0, 0, canvasa.width, canvasa.height);
+			mosaic();
 		};
 		imgList.onclick = function (e) {
 			if (e.target.innerHTML) {
@@ -102,6 +127,15 @@
 		};
 		var strp = '';
 		var dd = document.getElementById('dd');
+
+		uploadFile.onchange = function (event) {
+			var img = new FileReader();
+			img.readAsDataURL(event.target.files[0]);
+			img.onload = function (e) {
+				image.src = e.target.result;
+				console.log(e);
+			};
+		}
 
 		function mosaic() {
 			var imageData = ctxa.getImageData(0, 0, canvasa.width, canvasa.height),
